@@ -1,0 +1,5 @@
+node_mmodules
+.prettierrc
+*.pem
+wallet
+*.js
