@@ -1,4 +1,4 @@
-/* import express from 'express';
+ import express from 'express';
 //server imports
 import patient from './routes/patient.js';
 const app = express();
@@ -12,9 +12,8 @@ app.use('/patient', patient);
 
 app.listen(port, () => {
     console.info(`Server running on port ${port}`);
-}); */
-
-import { publicEncrypt, privateDecrypt, constants } from 'crypto';
+});
+/* import { encryption, decryption } from './modules/security/encryption.js';
 import { readFileSync } from 'fs';
 var data = 'mydata';
 var data1 = {
@@ -23,10 +22,9 @@ var data1 = {
     HCT: 12,
     Platelets: 161,
     WBC: 56,
-    ESR: 123
-}
-console.log(encrypt(data1))
-var pkey = '';
+    ESR: 123,
+};
+var pkey = ''; */
 
 /* function encrypt(data1:object){
     let enc = {}
@@ -44,20 +42,9 @@ var pkey = '';
     return enc
 } */
 
+/* var encryptedData = encryption(readFileSync('pk.pem').toString(),data1)
+console.log(encryptedData);
 
-var encryptedData = publicEncrypt(
-    {
-        key: readFileSync('pk.pem').toString(),
-        padding: constants.RSA_PKCS1_OAEP_PADDING,
-        oaepHash: 'sha256',
-    },
-    Buffer.from(JSON.stringify(data1))
-);
-console.log(encryptedData.toString());
 
-var decrypted_data = privateDecrypt({
-    key: readFileSync('pv.pem').toString(),
-    padding: constants.RSA_PKCS1_OAEP_PADDING,
-    oaepHash: 'sha256',
-}, encryptedData);
-console.log(decrypted_data.toString())
+var decryptedData = decryption(readFileSync('pv.pem').toString(),encryptedData) */
+

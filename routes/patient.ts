@@ -1,4 +1,5 @@
 import { Router, Request, Response, request } from 'express';
+import { encryption, decryption } from './../modules/security/encryption.js';
 import express from 'express';
 import gateway from './../gateway.js';
 import Debug from 'debug';
@@ -13,7 +14,7 @@ debug(`Starting debugging of patient module`);
 const router: Router = express.Router();
 router.use(upload());
 const channelName = 'mychannel';
-const chaincodeName = 'permission';
+const chaincodeName = 'patient';
 const network = await gateway.getNetwork(channelName);
 const contract = network.getContract(chaincodeName);
 
@@ -21,11 +22,40 @@ const contract = network.getContract(chaincodeName);
     await contract.submitTransaction('CreatePermission', id,P_ID,R_ID,D_ID,Timestamp,StatusOfRequest,Organization,RequestedTime);
 
 }
-
-
 CreatePermission("perm4","125",['deded','wwwsa','deded'].toString(),"789","ddd","aaa","swss","wwdwd").then((result)=>{
     console.log("Successful")
 }) */
+
+var data1:any = {
+    GeneratedTime: 'justnow',
+    IssuedBy: 'ME',
+    ReportFormat: 'Image',
+    ReportID: 'Report3',
+    Content: {
+        RBC: 12,
+        Haemoglobin: 12,
+        HCT: 12,
+        Platelets: 161,
+        WBC: 56,
+        ESR: 123,
+    },
+};
+
+data1.Content = encryption(fs.readFileSync('pk.pem').toString(), data1.Content);
+//createReport('patient1','BloodReports',data1).then(()=>{console.log('ok')})
+getReports('patient1','BloodReports').then((report)=>{
+    //report = Array.from(report)
+for(var i of report){
+    console.log(i.Content.data)
+ console.log(decryption(fs.readFileSync('pv.pem').toString(),i.Content.data))
+
+    break
+}
+})
+ console.log(data1.Content)
+ console.log(data1)
+ console.log(decryption(fs.readFileSync('pv.pem').toString(),data1.Content))
+
 
 
 async function getPatient(id: string) {
@@ -46,6 +76,12 @@ async function patientExists(id: string) {
 async function updatePatient(id: string, personalDetails: string) {
     await contract.submitTransaction('UpdatePatientPersonalDetails', id, personalDetails);
 }
+
+/* async function GetPublicKey(id:string){
+    let publicKey = await contract.evaluateTransaction('GetPublicKey',id)
+    return publicKey
+} */
+
 router.post('/', (request: Request, response: Response) => {
     debug('\nIn / route which fetches entire patient object');
     let id: string = request.body.ID;
